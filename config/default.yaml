@@ -1,0 +1,64 @@
+# wechat-ai-writer 默认配置
+
+# 写作风格
+style:
+  tone: "口语化"           # 选项：口语化、专业、幽默、犀利、温暖
+  length: "medium"        # 选项：short(800字)、medium(1500字)、long(2500字)
+  emotion_curve: "痛点-反转-治愈"  # 情感曲线设计
+
+# 搜索配置
+search:
+  article_count: 8        # 搜索文章数量
+  platforms:              # 搜索平台
+    - wechat             # 公众号
+    - zhihu              # 知乎
+    - xiaohongshu        # 小红书
+  include_memes: true     # 是否搜索梗图
+  meme_keywords:          # 梗图搜索关键词后缀
+    - "表情包"
+    - "梗图"
+    - "meme"
+
+# 图片配置
+images:
+  cover:
+    ratio: "21:9"         # 封面比例
+    width: 1920           # 宽度
+    height: 823           # 高度
+    style: "humorous"     # 风格：humorous、minimal、artistic
+  memes:
+    count: 3              # 插入梗图数量
+    max_size: 500         # 最大图片尺寸(KB)
+
+# 内容配置
+content:
+  insights_count: 3       # 洞见数量
+  golden_sentences: 5     # 金句数量
+  paragraphs_per_insight: 3  # 每个洞见的段落数
+  
+# 发布配置
+publish:
+  theme: "pie"            # 默认主题（使用wechat-mp-publisher的pie主题）
+  highlight: "github"     # 代码高亮主题
+  wait_for_confirm: true  # 是否等待用户确认
+  
+  # 可选主题列表（来自wechat-mp-publisher）
+  # 内置主题：default, orangeheart, rainbow, lapis, pie, maize, purple, phycat
+  # 自定义主题：aurora, newsroom, sage, ember
+  # 代码高亮：atom-one-dark, atom-one-light, dracula, github, github-dark, monokai, solarized-dark, solarized-light, xcode
+  
+# 输出配置
+output:
+  dir: "./output"         # 输出目录
+  save_draft: true        # 是否保存草稿
+  format: "markdown"      # 输出格式
+
+# 去AI痕迹配置
+humanizer:
+  enabled: true           # 是否启用去AI痕迹
+  check_list:             # 检查清单
+    - "删除AI高频词（赋能、闭环、底层逻辑）"
+    - "添加口语化表达（说实话、你可能没想到）"
+    - "避免三段式模板"
+    - "减少破折号使用"
+    - "删除空洞结尾"

@@ -1,0 +1,6 @@
+封面Prompt:
+A satirical and humorous banner illustration about "《除恶》：那个连买菜都要比价的老实人，是怎么变成毒贩的？", comic style, bold vibrant colors, exaggerated character expressions, 21:9 aspect ratio, suitable for social media cover, professional quality, eye-catching composition
+
+尺寸: 1920x823 (21:9)
+
+错误: API Error: The request failed because the input text may contain sensitive information. Request id: 02177526418032053e3b5a246ac6f20ec70e89c2b434acc4f6e08
