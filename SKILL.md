@@ -19,7 +19,7 @@ metadata:
 |------|------|------|
 | 1. 广度搜集 | 搜索5-10篇高质量文章 | 素材库 |
 | 2. 洞见提炼 | 对比分析，提炼3-5个独到观点 | 观点清单+情感曲线 |
-| 3. 封面生成 | 豆包AI生成21:9诙谐风格封面图 | cover.jpg |
+| 3. 封面生成 | Pexels免费图片（或豆包AI生成） | cover.jpg |
 | 4. 沉浸创作 | 口语化写作，写金句 | article.md |
 | 5. 添加Frontmatter | YAML元数据（title/cover/author） | 完整Markdown |
 | 6. 交付确认 | 展示初稿，等待用户确认发布 | 预览+确认流程 |
@@ -33,7 +33,7 @@ metadata:
     ↓
 [洞见提炼] → Moonshot kimi-k2.5 LLM生成
     ↓
-[封面生成] → 豆包Seedream 5.0 AI绘图
+[封面生成] → Pexels免费图片 → 豆包AI生成(备选)
     ↓
 [沉浸创作] → Moonshot LLM + 本地humanizer润色
     ↓
@@ -45,9 +45,31 @@ metadata:
 | 服务 | 用途 | 配置位置 |
 |------|------|----------|
 | **Moonshot kimi-k2.5** | LLM生成洞见和文章 | `scripts/llm-client.js` |
-| **豆包Seedream 5.0** | 封面图生成 | `scripts/doubao-image.js` |
+| **Pexels** | 免费高质量图片（封面首选） | `scripts/pexels-image.js` |
+| **豆包Seedream 5.0** | AI生成封面图（备选） | `scripts/doubao-image.js` |
 | **Tavily Search** | 知乎/小红书搜索 | OpenClaw配置 |
 | **wechat-article-search** | 公众号文章搜索 | 已安装技能 |
+
+## 封面图片来源（更新）
+
+**双保险策略**：
+1. **优先从 Pexels 获取** - 免费、高质量、真实照片
+2. **备选豆包 AI 生成** - 当 Pexels 无法获取时使用
+
+### Pexels 配置
+
+1. 访问 https://www.pexels.com/api/ 申请免费 API Key
+2. 复制 `.env.example` 为 `.env` 并填入 Key：
+   ```bash
+   cd ~/.openclaw/workspace/skills/wechat-ai-writer
+   cp .env.example .env
+   # 编辑 .env 填入 PEXELS_API_KEY
+   ```
+
+### 豆包配置（备选）
+
+当 Pexels 未配置或获取失败时，自动回退到豆包 AI 生成。
+需配置豆包 API Key 在环境变量中。
 | **wechat-toolkit** | 公众号发布 | 已安装技能 |
 
 ## 使用方法

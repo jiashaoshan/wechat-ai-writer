@@ -5,11 +5,24 @@
  * 输出：cover.jpg
  */
 
+// 手动加载.env文件
+const envPath = path.join(__dirname, '../.env');
+if (fs.existsSync(envPath)) {
+  const envContent = fs.readFileSync(envPath, 'utf8');
+  envContent.split('\n').forEach(line => {
+    const match = line.match(/^([^#=]+)=(.*)$/);
+    if (match) {
+      process.env[match[1].trim()] = match[2].trim();
+    }
+  });
+}
+
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
 const { generateCoverPrompt } = require('./llm-client');
 const { generateCoverImage } = require('./doubao-image');
+const { getImageFromPexels } = require('./pexels-image');
 
 // 兼容 path.expanduser
 path.expanduser = function(filepath) {
@@ -37,16 +50,27 @@ async function generateCover(topic, insights) {
   const coverPrompt = await generateCoverPrompt(topic, effectiveInsights);
   console.log('📝 封面Prompt:', coverPrompt.substring(0, 100) + '...');
   
-  // 3. 生成图片
-  const coverPath = await callImageGen(coverPrompt, outputDir);
+  // 3. 生成图片（优先 Pexels，回退豆包）
+  const coverPath = await callImageGen(coverPrompt, topic, outputDir);
   
   console.log(`✅ 封面图生成完成：${coverPath}`);
   return coverPath;
 }
 
-async function callImageGen(prompt, outputDir) {
+async function callImageGen(prompt, topic, outputDir) {
+  // 1. 首先尝试从 Pexels 获取图片
   try {
-    // 使用豆包生成封面图
+    console.log('   🔍 尝试从 Pexels 获取图片...');
+    const pexelsPath = await getImageFromPexels(topic, outputDir);
+    console.log('   ✅ Pexels 图片获取成功');
+    return pexelsPath;
+  } catch (pexelsError) {
+    console.log(`   ⚠️ Pexels 获取失败: ${pexelsError.message}`);
+    console.log('   🎨 回退到豆包生成...');
+  }
+  
+  // 2. Pexels 失败，使用豆包生成
+  try {
     const coverPath = await generateCoverImage(prompt, outputDir);
     return coverPath;
   } catch (e) {
