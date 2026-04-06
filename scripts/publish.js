@@ -10,13 +10,13 @@ const path = require('path');
 const os = require('os');
 const yaml = require('js-yaml');
 
-// 兼容 path.expanduser
-path.expanduser = function(filepath) {
+// 兼容 expandUser - 使用独立函数避免TDZ问题
+function expandUser(filepath) {
   if (filepath.startsWith('~/')) {
     return path.join(os.homedir(), filepath.slice(2));
   }
   return filepath;
-};
+}
 
 // 加载配置
 function loadConfig() {
@@ -79,8 +79,8 @@ async function doPublish(articlePath, options = {}) {
   console.log(`   使用主题: ${theme}, 代码高亮: ${highlight}`);
   
   // 检查 wechat-mp-publisher skill（优先使用）
-  const wechatPublisherPath = path.expanduser('~/.openclaw/workspace/skills/wechat-mp-publisher');
-  const wechatToolkitPath = path.expanduser('~/.openclaw/workspace/skills/wechat-toolkit');
+  const wechatPublisherPath = expandUser('~/.openclaw/workspace/skills/wechat-mp-publisher');
+  const wechatToolkitPath = expandUser('~/.openclaw/workspace/skills/wechat-toolkit');
   
   let publishScript = null;
   let usePublisher = false;

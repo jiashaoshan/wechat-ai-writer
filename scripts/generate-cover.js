@@ -5,32 +5,39 @@
  * 输出：cover.jpg
  */
 
-// 手动加载.env文件
-const envPath = path.join(__dirname, '../.env');
-if (fs.existsSync(envPath)) {
-  const envContent = fs.readFileSync(envPath, 'utf8');
-  envContent.split('\n').forEach(line => {
-    const match = line.match(/^([^#=]+)=(.*)$/);
-    if (match) {
-      process.env[match[1].trim()] = match[2].trim();
-    }
-  });
-}
-
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+
+// 手动加载.env文件（支持多个位置查找）
+const envSearchPaths = [
+  path.join(__dirname, '../../.env'),   // temp/scripts/wai-scripts/ → temp/.env
+  path.join(__dirname, '../.env'),       // 直接上级
+  path.join(os.homedir(), '.openclaw/workspace/.env'),  // workspace 根
+];
+for (const envPath of envSearchPaths) {
+  if (fs.existsSync(envPath)) {
+    const envContent = fs.readFileSync(envPath, 'utf8');
+    envContent.split('\n').forEach(line => {
+      const match = line.match(/^([^#=]+)=(.*)$/);
+      if (match) {
+        process.env[match[1].trim()] = match[2].trim();
+      }
+    });
+    break;
+  }
+}
 const { generateCoverPrompt } = require('./llm-client');
 const { generateCoverImage } = require('./doubao-image');
 const { getImageFromPexels } = require('./pexels-image');
 
-// 兼容 path.expanduser
-path.expanduser = function(filepath) {
+// 兼容 expandUser - 使用独立函数避免TDZ问题
+function expandUser(filepath) {
   if (filepath.startsWith('~/')) {
     return path.join(os.homedir(), filepath.slice(2));
   }
   return filepath;
-};
+}
 
 async function generateCover(topic, insights) {
   console.log(`🎨 开始生成封面图：${topic}`);

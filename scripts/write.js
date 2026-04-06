@@ -12,13 +12,13 @@ const { generateArticle } = require('./llm-client');
 const { execSync } = require('child_process');
 const yaml = require('js-yaml');
 
-// 兼容 path.expanduser
-path.expanduser = function(filepath) {
+// 兼容 expandUser - 使用独立函数避免TDZ问题
+function expandUser(filepath) {
   if (filepath.startsWith('~/')) {
     return path.join(os.homedir(), filepath.slice(2));
   }
   return filepath;
-};
+}
 
 // 加载配置
 function loadConfig() {

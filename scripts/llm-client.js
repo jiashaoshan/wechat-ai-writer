@@ -9,49 +9,19 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 
-// 读取OpenClaw配置
-function loadOpenClawConfig() {
-  const configPath = path.join(os.homedir(), '.openclaw/openclaw.json');
-  if (fs.existsSync(configPath)) {
-    return JSON.parse(fs.readFileSync(configPath, 'utf8'));
-  }
-  return null;
-}
-
-// 获取默认模型配置
+// 获取默认模型配置（直接硬编码，不依赖解析 openclaw.json）
 function getDefaultModelConfig() {
-  const config = loadOpenClawConfig();
-  if (!config || !config.models || !config.models.providers) {
-    throw new Error('无法读取OpenClaw配置');
-  }
+  // 优先使用环境变量中的 API Key
+  const apiKey = process.env.MOONSHOT_API_KEY || 'sk-YZW2kDozSfvQW5CqsiaCTSex4Kdw3RbyMPMnbJrWiDRhFgpH';
+  const baseUrl = process.env.MOONSHOT_BASE_URL || 'https://api.moonshot.cn/v1';
   
-  // 优先使用 moonshot/kimi-k2.5
-  const moonshotProvider = config.models.providers.moonshot;
-  if (moonshotProvider) {
-    // 使用提供的 API Key
-    const apiKey = 'sk-YZW2kDozSfvQW5CqsiaCTSex4Kdw3RbyMPMnbJrWiDRhFgpH';
-    return {
-      baseUrl: moonshotProvider.baseUrl,
-      apiKey: apiKey,
-      model: 'kimi-k2.5',
-      maxTokens: 8192,
-      contextWindow: 256000
-    };
-  }
-  
-  // 备选：使用 deepseek
-  const deepseekProvider = config.models.providers.deepseek;
-  if (deepseekProvider && deepseekProvider.apiKey) {
-    return {
-      baseUrl: deepseekProvider.baseUrl,
-      apiKey: deepseekProvider.apiKey,
-      model: 'deepseek-chat',
-      maxTokens: 8192,
-      contextWindow: 200000
-    };
-  }
-  
-  throw new Error('未找到可用的LLM配置');
+  return {
+    baseUrl: baseUrl,
+    apiKey: apiKey,
+    model: 'kimi-k2.5',
+    maxTokens: 8192,
+    contextWindow: 256000
+  };
 }
 
 // 调用LLM API
