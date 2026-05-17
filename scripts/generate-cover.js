@@ -52,10 +52,17 @@ async function generateCover(topic, insights) {
     { title: `${topic}的真相`, type: '本质', content: '表面现象背后的深层逻辑' }
   ];
   
-  // 2. 生成封面Prompt
-  console.log('   生成封面Prompt...');
-  const coverPrompt = await generateCoverPrompt(topic, effectiveInsights);
-  console.log('📝 封面Prompt:', coverPrompt.substring(0, 100) + '...');
+  // 2. 生成封面Prompt（失败不致命，用 topic 兜底）
+  let coverPrompt;
+  try {
+    console.log('   生成封面Prompt...');
+    coverPrompt = await generateCoverPrompt(topic, effectiveInsights);
+    console.log('📝 封面Prompt:', coverPrompt.substring(0, 100) + '...');
+  } catch (e) {
+    console.log(`   ⚠️ 封面Prompt生成失败: ${e.message}`);
+    console.log('   使用话题作为搜索词');
+    coverPrompt = `关于「${topic}」的封面图，现代风格，简洁大气`;
+  }
   
   // 3. 生成图片（优先 Pexels，回退豆包）
   const coverPath = await callImageGen(coverPrompt, topic, outputDir);
